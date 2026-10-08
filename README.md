@@ -18,5 +18,21 @@ pip3 install -r requirements.txt
 Then you can run the script:
 
 ```bash
-python3 convert-bip39-to-core.py 
+# 1. Create a new seed phrase
+python3 entropy-to-bip39.py --words 12
+
+# 2. Get the private descriptors for the seed phrase and passphrase
+python3 convert-bip39-to-core.py --show-input
+
+# 3. Create empty wallet: wallet_name, disable_private_keys, blank, passphrase, avoid_reuse, descriptors
+bitcoin-cli createwallet "my-wallet" false true "" false true
+
+# 4. Make sure your descriptors have a checksum.
+bitcoin-cli getdescriptorinfo $DESCRIPTOR
+
+# 5. Import the private descriptors:
+bitcoin-cli -rpcwallet=my-wallet importdescriptors '[
+  {"desc": "<receive descriptor w/ checksum>", "active": true, "internal": false, "range": [0, 999], "timestamp": "0"},
+  {"desc": "<change descriptor w/ checksum>",  "active": true, "internal": true,  "range": [0, 999], "timestamp": "0"}
+]'
 ```

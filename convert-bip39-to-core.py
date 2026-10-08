@@ -61,6 +61,10 @@ def main():
       raise SystemExit("Invalid BIP39 mnemonic (bad word or checksum)")
 
   passphrase = prompt_input("BIP39 passphrase (empty for none):")
+  if passphrase:
+      print("Using a BIP39 passphrase.")
+  else:
+      print("No BIP39 passphrase.")
   net = NETWORKS["main"]
   seed = bip39.mnemonic_to_seed(mnemonic, password=passphrase)
   root = bip32.HDKey.from_seed(seed, version=net["xprv"])
@@ -89,7 +93,5 @@ def main():
       print("Change  :", change)
       print("Watch-only receive:", watch)
 
-
 if __name__ == "__main__":
   main()
-
