@@ -1,3 +1,7 @@
+# WARNING!
+
+RUN THIS ONLY ON A DEDICATED AIRGAP COMPUTER DISCONNECTED FROM THE INTERNET! IF YOU DON’T KNOW HOW TO SET ONE UP THEN I RECOMMEND YOU WATCH THIS VIDEO FIRST https://www.youtube.com/watch?v=XjfRXyi3W4s
+
 ## Getting started
 
 Set up and env and install `embit`.
