@@ -74,23 +74,22 @@ def main():
   seed = bip39.mnemonic_to_seed(mnemonic, password=passphrase)
   root = bip32.HDKey.from_seed(seed, version=net["xprv"])
 
-  common_xprv = root.to_base58()
+  master_xprv = root.to_base58()
   fingerprint = root.my_fingerprint.hex()
   fingerprint_no_passphrase = root_no_passphrase.my_fingerprint.hex()
-
-  print("Master fingerprint (no passphrase):", fingerprint_no_passphrase)
-  print("Master fingerprint:", fingerprint)
-
   script_types = SCRIPT_TYPES if args.type == "all" else [
     t for t in SCRIPT_TYPES if t["key"] == args.type
   ]
 
+  print("Master fingerprint (no passphrase):", fingerprint_no_passphrase)
+  print("Master fingerprint:", fingerprint)
+
   for script_type in script_types:
     receive = Descriptor.from_string(
-      script_type["wrap"].format(f"[{fingerprint}/{script_type['purpose']}/0h/0h]{common_xprv}/0/*")
+      script_type["wrap"].format(f"[{fingerprint}/{script_type['purpose']}/0h/0h]{master_xprv}/0/*")
     )
     change = Descriptor.from_string(
-      script_type["wrap"].format(f"[{fingerprint}/{script_type['purpose']}/0h/0h]{common_xprv}/1/*")
+      script_type["wrap"].format(f"[{fingerprint}/{script_type['purpose']}/0h/0h]{master_xprv}/1/*")
     )
 
     print()
