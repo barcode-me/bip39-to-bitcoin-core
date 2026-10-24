@@ -26,7 +26,7 @@ python3 convert-bip39-to-core.py --show-input --bitcoin-core
 # 3. Create empty wallet: wallet_name, disable_private_keys, blank, passphrase, avoid_reuse, descriptors
 bitcoin-cli createwallet "my-wallet" false true "" false true
 
-# 5. Import the private descriptors: this is from the step #2 you should simply copy and paste it
+# 4. Import the private descriptors: this is from the step #2 you should simply copy and paste it
 bitcoin-cli -rpcwallet=my-wallet importdescriptors '[
   {"desc": "<receive descriptor w/ checksum>", "active": true, "internal": false, "range": [0, 999], "timestamp": "now"},
   {"desc": "<change descriptor w/ checksum>",  "active": true, "internal": true,  "range": [0, 999], "timestamp": "now"}
