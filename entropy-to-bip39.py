@@ -5,6 +5,7 @@ user-supplied entropy (hex). Run this offline, because the output is a seed phra
 """
 import argparse
 import secrets
+import sys
 from getpass import getpass
 from embit import bip39
 
@@ -25,14 +26,32 @@ def main():
       action="store_true",
       help="Echo your custom entropy to the screen as you type it (hidden by default)",
   )
+  parser.add_argument(
+      "--raw",
+      action="store_true",
+      help="Print only the mnemonic words to stdout (prompts and messages go to stderr)",
+  )
+  parser.add_argument(
+      "--auto",
+      action="store_true",
+      help="Skip the entropy prompt and generate the seed phrase from secure randomness",
+  )
   args = parser.parse_args()
-  prompt_input = input if args.show_input else getpass
-  if not args.show_input:
-      print("Input is hidden. Pass --show-input to see what you type.")
+  out = sys.stderr if args.raw else sys.stdout
+
+  def prompt_input(prompt):
+      if not args.show_input:
+          return getpass(prompt, stream=out)
+      out.write(prompt)
+      out.flush()
+      return input()
+
+  if not args.show_input and not args.auto:
+      print("Input is hidden. Pass --show-input to see what you type.", file=out)
 
   entropy_bytes = WORD_COUNT_TO_BYTES[args.words]
 
-  custom_entropy = prompt_input(
+  custom_entropy = "" if args.auto else prompt_input(
       f"Custom entropy as hex ({entropy_bytes} bytes / {entropy_bytes * 2} hex chars, "
       "leave empty to generate securely): "
   ).strip()
@@ -48,15 +67,18 @@ def main():
               f"({entropy_bytes * 2} hex chars) for a {args.words}-word mnemonic, "
               f"got {len(entropy)} bytes"
           )
-      print("Using user-supplied entropy.")
+      print("Using user-supplied entropy.", file=out)
   else:
       entropy = secrets.token_bytes(entropy_bytes)
-      print("Using securely generated entropy.")
+      print("Using securely generated entropy.", file=out)
 
   mnemonic = bip39.mnemonic_from_bytes(entropy)
 
-  print()
-  print("Mnemonic:", mnemonic)
+  if args.raw:
+      print(mnemonic)
+  else:
+      print()
+      print("Mnemonic:", mnemonic)
 
 
 if __name__ == "__main__":

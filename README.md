@@ -20,19 +20,16 @@ A simple python script to convert a BIP39 seedphrase and passphrase into private
 # 1. Create a new seed phrase
 python3 entropy-to-bip39.py --words 12
 
-# 2. Get the private descriptors for the seed phrase and passphrase
-python3 convert-bip39-to-core.py --show-input
+# 2. Get the private descriptors for the seed phrase and passphrase, use the --bitcoin-core option to get the CLI command to run to import the descriptors
+python3 convert-bip39-to-core.py --show-input --bitcoin-core
 
 # 3. Create empty wallet: wallet_name, disable_private_keys, blank, passphrase, avoid_reuse, descriptors
 bitcoin-cli createwallet "my-wallet" false true "" false true
 
-# 4. Make sure your descriptors have a checksum.
-bitcoin-cli getdescriptorinfo $DESCRIPTOR
-
-# 5. Import the private descriptors:
+# 5. Import the private descriptors: this is from the step #2 you should simply copy and paste it
 bitcoin-cli -rpcwallet=my-wallet importdescriptors '[
-  {"desc": "<receive descriptor w/ checksum>", "active": true, "internal": false, "range": [0, 999], "timestamp": "0"},
-  {"desc": "<change descriptor w/ checksum>",  "active": true, "internal": true,  "range": [0, 999], "timestamp": "0"}
+  {"desc": "<receive descriptor w/ checksum>", "active": true, "internal": false, "range": [0, 999], "timestamp": "now"},
+  {"desc": "<change descriptor w/ checksum>",  "active": true, "internal": true,  "range": [0, 999], "timestamp": "now"}
 ]'
 ```
 
